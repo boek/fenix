@@ -74,7 +74,8 @@ class DefaultBrowserToolbarController(
     private val scope: CoroutineScope,
     private val tabCollectionStorage: TabCollectionStorage,
     private val topSiteStorage: TopSiteStorage,
-    private val sharedViewModel: SharedViewModel
+    private val sharedViewModel: SharedViewModel,
+    private val onTabButtonClicked: () -> Unit = {}
 ) : BrowserToolbarController {
 
     private val currentSession
@@ -124,7 +125,8 @@ class DefaultBrowserToolbarController(
 
     override fun handleTabCounterClick() {
         sharedViewModel.shouldScrollToSelectedTab = true
-        animateTabAndNavigateHome()
+        onTabButtonClicked()
+//        animateTabAndNavigateHome()
     }
 
     override fun handleBrowserMenuDismissed(lowPrioHighlightItems: List<ToolbarMenu.Item>) {

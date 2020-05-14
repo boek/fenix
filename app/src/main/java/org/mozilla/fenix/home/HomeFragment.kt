@@ -67,6 +67,7 @@ import mozilla.components.feature.tab.collections.TabCollection
 import mozilla.components.feature.top.sites.TopSite
 import mozilla.components.lib.state.ext.consumeFrom
 import mozilla.components.lib.state.ext.flowScoped
+import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.ktx.android.util.dpToPx
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifChanged
 import org.mozilla.fenix.BrowserDirection
@@ -98,6 +99,8 @@ import org.mozilla.fenix.home.sessioncontrol.viewholders.CollectionViewHolder
 import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.settings.SupportUtils
 import org.mozilla.fenix.settings.deletebrowsingdata.deleteAndQuit
+import org.mozilla.fenix.tabtray.TabTrayInteractor
+import org.mozilla.fenix.tabtray.TabTrayView
 import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.utils.FragmentPreDrawManager
 import org.mozilla.fenix.utils.Settings
@@ -108,7 +111,7 @@ import kotlin.math.abs
 import kotlin.math.min
 
 @SuppressWarnings("TooManyFunctions", "LargeClass")
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), UserInteractionHandler, TabTrayInteractor {
     private val homeViewModel: HomeScreenViewModel by viewModels {
         ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
     }
@@ -163,6 +166,8 @@ class HomeFragment : Fragment() {
 
     private var sessionControlView: SessionControlView? = null
     private lateinit var currentMode: CurrentMode
+
+    private var tabTrayView: TabTrayView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -238,6 +243,11 @@ class HomeFragment : Fragment() {
             view.sessionControlRecyclerView,
             sessionControlInteractor,
             homeViewModel
+        )
+
+        tabTrayView = TabTrayView(
+            view.homeLayout,
+            this
         )
         activity.themeManager.applyStatusBarTheme(activity)
 
@@ -356,7 +366,8 @@ class HomeFragment : Fragment() {
         view.tab_button.setOnClickListener {
             invokePendingDeleteJobs()
             hideOnboardingIfNeeded()
-            findNavController().navigate(HomeFragmentDirections.actionGlobalTabTrayFragment())
+//            findNavController().navigate(HomeFragmentDirections.actionGlobalTabTrayFragment())
+            tabTrayView?.toggle()
         }
 
         PrivateBrowsingButtonView(
@@ -1006,6 +1017,10 @@ class HomeFragment : Fragment() {
             (sessionControlView!!.view.layoutManager as LinearLayoutManager)
                 .scrollToPositionWithOffset(position, SELECTED_TAB_OFFSET)
         }
+    }
+
+    override fun onBackPressed(): Boolean {
+        return tabTrayView?.onBackPressed() ?: false
     }
 
     companion object {

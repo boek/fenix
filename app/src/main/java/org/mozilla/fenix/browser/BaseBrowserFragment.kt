@@ -89,6 +89,8 @@ import org.mozilla.fenix.ext.requireComponents
 import org.mozilla.fenix.ext.sessionsOfType
 import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.home.SharedViewModel
+import org.mozilla.fenix.tabtray.TabTrayInteractor
+import org.mozilla.fenix.tabtray.TabTrayView
 import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.wifi.SitePermissionsWifiIntegration
 import java.lang.ref.WeakReference
@@ -99,7 +101,7 @@ import java.lang.ref.WeakReference
  * UI code specific to the app or to custom tabs can be found in the subclasses.
  */
 @Suppress("TooManyFunctions", "LargeClass")
-abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, SessionManager.Observer {
+abstract class BaseBrowserFragment : Fragment(), TabTrayInteractor, UserInteractionHandler, SessionManager.Observer {
     protected lateinit var browserFragmentStore: BrowserFragmentStore
     private lateinit var browserAnimator: BrowserAnimator
 
@@ -110,6 +112,10 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Session
     private var _browserToolbarView: BrowserToolbarView? = null
     protected val browserToolbarView: BrowserToolbarView
         get() = _browserToolbarView!!
+
+    private var _tabTrayView: TabTrayView? = null
+    protected val tabTrayView: TabTrayView
+        get() = _tabTrayView!!
 
     protected val readerViewFeature = ViewBoundFeatureWrapper<ReaderViewFeature>()
 
@@ -206,7 +212,8 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Session
                 scope = viewLifecycleOwner.lifecycleScope,
                 tabCollectionStorage = requireComponents.core.tabCollectionStorage,
                 topSiteStorage = requireComponents.core.topSiteStorage,
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedViewModel,
+                onTabButtonClicked = { _tabTrayView?.toggle() }
             )
 
             _browserInteractor = BrowserInteractor(
@@ -219,6 +226,11 @@ abstract class BaseBrowserFragment : Fragment(), UserInteractionHandler, Session
                 interactor = browserInteractor,
                 customTabSession = customTabSessionId?.let { sessionManager.findSessionById(it) },
                 lifecycleOwner = viewLifecycleOwner
+            )
+
+            _tabTrayView = TabTrayView(
+                view.browserLayout,
+                this
             )
 
             toolbarIntegration.set(
