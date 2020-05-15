@@ -74,5 +74,7 @@
         mozac:tabsTraySelectedItemBackgroundColor="?tabTrayItemSelectedBackground"
         mozac:tabsTraySelectedItemTextColor="?tabTrayItemText"
         mozac:tabsTrayItemUrlTextColor="?tabTrayItemUrl"
-        mozac:tabsTraySelectedItemUrlTextColor="?tabTrayItemUrl"/>
+        mozac:tabsTraySelectedItemUrlTextColor="?tabTrayItemUrl"
+        android:clipToPadding="false"
+        android:paddingBottom="90dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
