@@ -25,8 +25,8 @@ import org.mozilla.fenix.ext.components
  * to respond to user interaction on the AwesomebarView
  */
 interface TabTrayInteractor {
-//    fun onTabSelected(tab: Tab)
-//    fun onNewTabTapped()
+    fun onTabSelected(tab: Tab)
+    fun onNewTabTapped()
 }
 
 /**
@@ -61,10 +61,7 @@ class TabTrayView(
                 }
             }
 
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-            }
-
+            override fun onStateChanged(bottomSheet: View, newState: Int) {}
         })
 
         tabsFeature = TabsFeature(
@@ -78,7 +75,19 @@ class TabTrayView(
             TabsTouchHelper(tray.tabsAdapter).attachToRecyclerView(tray)
         }
 
+        fabView.new_tab_button.setOnClickListener {
+            interactor.onNewTabTapped()
+        }
+
         tabsFeature.start()
+    }
+
+    fun show() {
+        behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+    }
+
+    fun hide() {
+        behavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     fun toggle() {

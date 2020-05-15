@@ -599,7 +599,8 @@ abstract class BaseBrowserFragment : Fragment(), TabTrayInteractor, UserInteract
 
     @CallSuper
     override fun onBackPressed(): Boolean {
-        return sessionRemoved ||
+        return tabTrayView.onBackPressed() ||
+                sessionRemoved ||
                 findInPageIntegration.onBackPressed() ||
                 fullScreenFeature.onBackPressed() ||
                 sessionFeature.onBackPressed() ||
@@ -881,6 +882,16 @@ abstract class BaseBrowserFragment : Fragment(), TabTrayInteractor, UserInteract
         super.onDestroyView()
         _browserToolbarView = null
         _browserInteractor = null
+    }
+
+    override fun onTabSelected(tab: mozilla.components.concept.tabstray.Tab) {
+    }
+
+    override fun onNewTabTapped() {
+        findNavController().nav(
+            R.id.browserFragment,
+            BrowserFragmentDirections.actionGlobalHome()
+        )
     }
 
     companion object {

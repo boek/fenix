@@ -161,13 +161,15 @@ class HomeFragment : Fragment(), UserInteractionHandler, TabTrayInteractor {
     private val onboarding by lazy { FenixOnboarding(requireContext()) }
     private lateinit var homeFragmentStore: HomeFragmentStore
     private var _sessionControlInteractor: SessionControlInteractor? = null
-    protected val sessionControlInteractor: SessionControlInteractor
+    private val sessionControlInteractor: SessionControlInteractor
         get() = _sessionControlInteractor!!
 
     private var sessionControlView: SessionControlView? = null
     private lateinit var currentMode: CurrentMode
 
-    private var tabTrayView: TabTrayView? = null
+    private var _tabTrayView: TabTrayView? = null
+    private val tabTrayView: TabTrayView
+        get() = _tabTrayView!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -245,7 +247,7 @@ class HomeFragment : Fragment(), UserInteractionHandler, TabTrayInteractor {
             homeViewModel
         )
 
-        tabTrayView = TabTrayView(
+        _tabTrayView = TabTrayView(
             view.homeLayout,
             this
         )
@@ -367,7 +369,7 @@ class HomeFragment : Fragment(), UserInteractionHandler, TabTrayInteractor {
             invokePendingDeleteJobs()
             hideOnboardingIfNeeded()
 //            findNavController().navigate(HomeFragmentDirections.actionGlobalTabTrayFragment())
-            tabTrayView?.toggle()
+            tabTrayView.toggle()
         }
 
         PrivateBrowsingButtonView(
@@ -1020,7 +1022,7 @@ class HomeFragment : Fragment(), UserInteractionHandler, TabTrayInteractor {
     }
 
     override fun onBackPressed(): Boolean {
-        return tabTrayView?.onBackPressed() ?: false
+        return tabTrayView.onBackPressed()
     }
 
     companion object {
@@ -1037,6 +1039,13 @@ class HomeFragment : Fragment(), UserInteractionHandler, TabTrayInteractor {
 
         // Layout
         private const val HEADER_MARGIN = 60
+    }
+
+    override fun onTabSelected(tab: mozilla.components.concept.tabstray.Tab) {
+    }
+
+    override fun onNewTabTapped() {
+        tabTrayView.hide()
     }
 }
 
