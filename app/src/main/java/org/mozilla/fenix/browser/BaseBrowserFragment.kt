@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mozilla.appservices.places.BookmarkRoot
@@ -885,13 +886,24 @@ abstract class BaseBrowserFragment : Fragment(), TabTrayInteractor, UserInteract
     }
 
     override fun onTabSelected(tab: mozilla.components.concept.tabstray.Tab) {
+        tabTrayView.hide()
     }
 
     override fun onNewTabTapped() {
-        findNavController().nav(
-            R.id.browserFragment,
-            BrowserFragmentDirections.actionGlobalHome()
-        )
+        val navController = findNavController()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            browserAnimator.beginAnimateOut()
+            // Delay for a short amount of time so the browser has time to start animating out
+            // before we transition the fragment. This makes the animation feel smoother
+            delay(DefaultBrowserToolbarController.ANIMATION_DELAY)
+            if (!navController.popBackStack(R.id.homeFragment, false)) {
+                navController.nav(
+                    R.id.browserFragment,
+                    BrowserFragmentDirections.actionGlobalHome()
+                )
+            }
+        }
     }
 
     companion object {

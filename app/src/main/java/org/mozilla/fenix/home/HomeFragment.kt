@@ -1042,6 +1042,8 @@ class HomeFragment : Fragment(), UserInteractionHandler, TabTrayInteractor {
     }
 
     override fun onTabSelected(tab: mozilla.components.concept.tabstray.Tab) {
+        tabTrayView.hide()
+        (activity as HomeActivity).openToBrowser(BrowserDirection.FromHome)
     }
 
     override fun onNewTabTapped() {

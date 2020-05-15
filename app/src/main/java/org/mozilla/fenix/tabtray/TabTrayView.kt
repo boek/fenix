@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.component_tabstray_fab.view.*
 import kotlinx.android.synthetic.main.fragment_tab_tray.*
 import mozilla.components.browser.tabstray.BrowserTabsTray
 import mozilla.components.concept.tabstray.Tab
+import mozilla.components.concept.tabstray.TabsTray
 import mozilla.components.feature.tabs.tabstray.TabsFeature
 import mozilla.components.support.base.feature.UserInteractionHandler
 import org.mozilla.fenix.R
@@ -35,7 +36,7 @@ interface TabTrayInteractor {
 class TabTrayView(
     private val container: ViewGroup,
     val interactor: TabTrayInteractor
-) : LayoutContainer, UserInteractionHandler {
+) : LayoutContainer, TabsTray.Observer, UserInteractionHandler {
     val fabView = LayoutInflater.from(container.context)
         .inflate(R.layout.component_tabstray_fab, container, true)
 
@@ -79,6 +80,7 @@ class TabTrayView(
             interactor.onNewTabTapped()
         }
 
+        tabsTray.register(this)
         tabsFeature.start()
     }
 
@@ -105,5 +107,11 @@ class TabTrayView(
         }
 
         return false
+    }
+
+    override fun onTabClosed(tab: Tab) {}
+
+    override fun onTabSelected(tab: Tab) {
+        interactor.onTabSelected(tab)
     }
 }
