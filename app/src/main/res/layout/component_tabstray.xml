@@ -9,14 +9,9 @@
     android:id="@+id/tab_wrapper"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_marginTop="120dp"
-    android:layout_marginStart="1dp"
-    android:layout_marginEnd="1dp"
     android:background="@drawable/tab_tray_background"
-    android:elevation="20dp"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="200dp"
-    app:behavior_skipCollapsed="true"
+    android:elevation="20dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
     <View
         android:id="@+id/handle"
@@ -39,12 +34,14 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/default_tab_item"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:icon="@drawable/ic_tabs"
             android:text="Default" />
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/private_tab_item"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:icon="@drawable/private_browsing_button"

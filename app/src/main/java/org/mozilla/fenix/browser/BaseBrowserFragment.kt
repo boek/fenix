@@ -66,6 +66,7 @@ import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.IntentReceiverActivity
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
+import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.browser.readermode.DefaultReaderModeController
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.FindInPageIntegration
@@ -889,7 +890,7 @@ abstract class BaseBrowserFragment : Fragment(), TabTrayInteractor, UserInteract
         tabTrayView.hide()
     }
 
-    override fun onNewTabTapped() {
+    override fun onNewTabTapped(private: Boolean) {
         val navController = findNavController()
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -897,6 +898,7 @@ abstract class BaseBrowserFragment : Fragment(), TabTrayInteractor, UserInteract
             // Delay for a short amount of time so the browser has time to start animating out
             // before we transition the fragment. This makes the animation feel smoother
             delay(DefaultBrowserToolbarController.ANIMATION_DELAY)
+            (activity as HomeActivity).browsingModeManager.mode = BrowsingMode.fromBoolean(private)
             if (!navController.popBackStack(R.id.homeFragment, false)) {
                 navController.nav(
                     R.id.browserFragment,

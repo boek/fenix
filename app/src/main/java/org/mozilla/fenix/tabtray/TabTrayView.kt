@@ -8,11 +8,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.component_tabstray.view.*
 import kotlinx.android.synthetic.main.component_tabstray_fab.view.*
 import kotlinx.android.synthetic.main.fragment_tab_tray.*
+import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.tabstray.BrowserTabsTray
 import mozilla.components.concept.tabstray.Tab
 import mozilla.components.concept.tabstray.TabsTray
@@ -27,16 +30,15 @@ import org.mozilla.fenix.ext.components
  */
 interface TabTrayInteractor {
     fun onTabSelected(tab: Tab)
-    fun onNewTabTapped()
+    fun onNewTabTapped(private: Boolean)
 }
-
 /**
  * View that contains and configures the BrowserAwesomeBar
  */
 class TabTrayView(
     private val container: ViewGroup,
     val interactor: TabTrayInteractor
-) : LayoutContainer, TabsTray.Observer, UserInteractionHandler {
+) : LayoutContainer, TabsTray.Observer, UserInteractionHandler, TabLayout.OnTabSelectedListener {
     val fabView = LayoutInflater.from(container.context)
         .inflate(R.layout.component_tabstray_fab, container, true)
 
@@ -52,10 +54,11 @@ class TabTrayView(
     init {
         fabView.new_tab_button.compatElevation = 80.0f
         behavior.state = BottomSheetBehavior.STATE_HIDDEN
+
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 Log.e("slideOffset", "$slideOffset")
-                if (slideOffset > 0) {
+                if (slideOffset > -0.4) {
                     fabView.new_tab_button.show()
                 } else {
                     fabView.new_tab_button.hide()
@@ -64,6 +67,8 @@ class TabTrayView(
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
         })
+
+        view.tabLayout.addOnTabSelectedListener(this)
 
         tabsFeature = TabsFeature(
             view.tabsTray,
@@ -77,7 +82,7 @@ class TabTrayView(
         }
 
         fabView.new_tab_button.setOnClickListener {
-            interactor.onNewTabTapped()
+            interactor.onNewTabTapped(view.tabLayout.selectedTabPosition == 1)
         }
 
         tabsTray.register(this)
@@ -88,7 +93,8 @@ class TabTrayView(
         behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
-    fun hide() {
+    fun hide(onCompletion: () -> Unit) {
+        
         behavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
@@ -113,5 +119,23 @@ class TabTrayView(
 
     override fun onTabSelected(tab: Tab) {
         interactor.onTabSelected(tab)
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab?) {
+
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab?) {
+        // Todo: We need a better way to determine which tab was selected.
+        val filter: (TabSessionState) -> Boolean = when (tab?.position) {
+            1 -> { state -> state.content.private }
+            else -> { state -> !state.content.private }
+        }
+
+        tabsFeature.filterTabs(filter)
     }
 }
