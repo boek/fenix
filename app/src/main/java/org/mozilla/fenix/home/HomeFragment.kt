@@ -75,6 +75,7 @@ import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.BrowserAnimator.Companion.getToolbarNavOptions
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
+import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.components.PrivateShortcutCreateManager
 import org.mozilla.fenix.components.StoreProvider
@@ -1046,7 +1047,8 @@ class HomeFragment : Fragment(), UserInteractionHandler, TabTrayInteractor {
         (activity as HomeActivity).openToBrowser(BrowserDirection.FromHome)
     }
 
-    override fun onNewTabTapped() {
+    override fun onNewTabTapped(private: Boolean) {
+        browsingModeManager.mode = BrowsingMode.fromBoolean(private)
         tabTrayView.hide()
     }
 }
