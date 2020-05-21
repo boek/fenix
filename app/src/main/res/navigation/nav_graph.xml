@@ -49,7 +49,13 @@
     <action android:id="@+id/action_global_accountSettingsFragment" app:destination="@id/accountSettingsFragment" />
     <action android:id="@+id/action_global_trackingProtectionPanelDialogFragment" app:destination="@id/trackingProtectionPanelDialogFragment" />
     <action android:id="@+id/action_global_quickSettingsSheetDialogFragment" app:destination="@id/quickSettingsSheetDialogFragment"/>
-    <action android:id="@+id/action_global_tabTrayFragment" app:destination="@id/tabTrayFragment"/>
+    <action android:id="@+id/action_global_tabTrayFragment" app:destination="@id/tabTrayBottomSheetFragment"/>
+
+    <dialog
+        android:id="@+id/tabTrayBottomSheetFragment"
+        android:name="org.mozilla.fenix.tabtray.TabTrayBottomSheetDialogFragment">
+
+    </dialog>
 
     <fragment
         android:id="@+id/tabTrayFragment"

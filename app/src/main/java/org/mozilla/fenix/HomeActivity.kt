@@ -81,6 +81,7 @@ import mozilla.components.concept.tabstray.TabsTray
 import mozilla.components.browser.tabstray.TabsAdapter
 import mozilla.components.browser.tabstray.BrowserTabsTray
 import mozilla.components.browser.tabstray.DefaultTabViewHolder
+import org.mozilla.fenix.tabtray.TabTrayBottomSheetDialogFragmentDirections
 import org.mozilla.fenix.tabtray.TabTrayFragmentDirections
 
 /**
@@ -372,6 +373,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity() {
             SearchFragmentDirections.actionGlobalBrowser(customTabSessionId)
         BrowserDirection.FromTabTray ->
             TabTrayFragmentDirections.actionGlobalBrowser(customTabSessionId)
+        BrowserDirection.FromTabTrayDialog ->
+            TabTrayBottomSheetDialogFragmentDirections.actionGlobalBrowser(customTabSessionId)
         BrowserDirection.FromSettings ->
             SettingsFragmentDirections.actionGlobalBrowser(customTabSessionId)
         BrowserDirection.FromBookmarks ->

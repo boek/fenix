@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.extensions.LayoutContainer
@@ -68,7 +67,7 @@ class TabTrayView(
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
         })
 
-        view.tabLayout.addOnTabSelectedListener(this)
+        view.tab_layout.addOnTabSelectedListener(this)
 
         tabsFeature = TabsFeature(
             view.tabsTray,
@@ -82,7 +81,7 @@ class TabTrayView(
         }
 
         fabView.new_tab_button.setOnClickListener {
-            interactor.onNewTabTapped(view.tabLayout.selectedTabPosition == 1)
+            interactor.onNewTabTapped(view.tab_layout.selectedTabPosition == 1)
         }
 
         tabsTray.register(this)

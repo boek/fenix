@@ -100,6 +100,7 @@ import org.mozilla.fenix.home.sessioncontrol.viewholders.CollectionViewHolder
 import org.mozilla.fenix.onboarding.FenixOnboarding
 import org.mozilla.fenix.settings.SupportUtils
 import org.mozilla.fenix.settings.deletebrowsingdata.deleteAndQuit
+import org.mozilla.fenix.tabtray.TabTrayBottomSheetDialogFragment
 import org.mozilla.fenix.tabtray.TabTrayInteractor
 import org.mozilla.fenix.tabtray.TabTrayView
 import org.mozilla.fenix.theme.ThemeManager
@@ -370,7 +371,19 @@ class HomeFragment : Fragment(), UserInteractionHandler, TabTrayInteractor {
             invokePendingDeleteJobs()
             hideOnboardingIfNeeded()
 //            findNavController().navigate(HomeFragmentDirections.actionGlobalTabTrayFragment())
-            tabTrayView.toggle()
+            val tabTray = TabTrayBottomSheetDialogFragment()
+            tabTray.show(parentFragmentManager, null)
+            tabTray.interactor = object : TabTrayBottomSheetDialogFragment.Interactor {
+                override fun onTabSelected(tab: mozilla.components.concept.tabstray.Tab) {
+                    tabTray.dismiss()
+                    (activity as HomeActivity).openToBrowser(BrowserDirection.FromHome)
+                }
+
+                override fun onNewTabTapped(private: Boolean) {
+                    tabTray.dismiss()
+                }
+
+            }
         }
 
         PrivateBrowsingButtonView(
