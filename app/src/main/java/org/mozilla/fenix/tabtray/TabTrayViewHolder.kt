@@ -165,5 +165,6 @@ class TabTrayViewHolder(itemView: View) : TabViewHolder(itemView) {
 
     companion object {
         private const val PLAY_PAUSE_BUTTON_EXTRA_DPS = 24
+        const val LAYOUT_ID = R.layout.tab_tray_item
     }
 }

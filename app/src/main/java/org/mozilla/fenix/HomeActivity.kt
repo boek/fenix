@@ -80,6 +80,7 @@ import org.mozilla.fenix.utils.RunWhenReadyQueue
 import mozilla.components.concept.tabstray.TabsTray
 import mozilla.components.browser.tabstray.TabsAdapter
 import mozilla.components.browser.tabstray.BrowserTabsTray
+import org.mozilla.fenix.tabtray.FenixTabsTray
 import org.mozilla.fenix.tabtray.TabTrayViewHolder
 
 /**
@@ -220,15 +221,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity() {
             }
         }.asView()
         TabsTray::class.java.name -> {
-            val layout = LinearLayoutManager(context)
-            val adapter = TabsAdapter { parentView, _ ->
-                TabTrayViewHolder(
-                    LayoutInflater.from(this).inflate(
-                        R.layout.tab_tray_item,
-                        parentView,
-                        false)
-                )
-            }
             val decoration = DividerItemDecoration(
                 context,
                 DividerItemDecoration.VERTICAL
@@ -237,11 +229,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity() {
             drawable?.let {
                 decoration.setDrawable(it)
             }
-            BrowserTabsTray(
+            FenixTabsTray(
                 context,
                 attrs,
-                tabsAdapter = adapter,
-                layout = layout,
                 itemDecoration = decoration
             )
         }
