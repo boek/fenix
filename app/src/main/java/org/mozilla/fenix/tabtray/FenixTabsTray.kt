@@ -5,6 +5,7 @@
 package org.mozilla.fenix.tabtray
 
 import android.content.Context
+import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,7 +19,6 @@ import mozilla.components.concept.tabstray.TabsTray
 import mozilla.components.support.base.observer.Observable
 import mozilla.components.support.base.observer.ObserverRegistry
 import org.mozilla.fenix.R
-import java.lang.IllegalStateException
 
 class FenixTabsAdapter(
     delegate: Observable<TabsTray.Observer> = ObserverRegistry()
@@ -79,6 +79,23 @@ class TabTrayDivider(context: Context) : DividerItemDecoration(context, VERTICAL
     init {
         AppCompatResources.getDrawable(context, R.drawable.tab_tray_divider)?.also {
             setDrawable(it)
+        }
+    }
+
+    override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        val dividerLeft = parent.paddingLeft
+        val dividerRight = parent.width - parent.paddingRight
+
+        val childCount = parent.childCount
+        for (i in 0 until childCount - 1) {
+            val child = parent.getChildAt(i)
+            val params =
+                child.layoutParams as RecyclerView.LayoutParams
+            val dividerTop = child.bottom + params.bottomMargin
+            val dividerBottom = dividerTop + (drawable?.intrinsicHeight ?: 0)
+
+            drawable?.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom)
+            drawable?.draw(canvas)
         }
     }
 }
