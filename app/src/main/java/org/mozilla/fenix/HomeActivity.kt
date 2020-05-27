@@ -220,21 +220,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity() {
                 share(it)
             }
         }.asView()
-        TabsTray::class.java.name -> {
-            val decoration = DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            )
-            val drawable = AppCompatResources.getDrawable(context, R.drawable.tab_tray_divider)
-            drawable?.let {
-                decoration.setDrawable(it)
-            }
-            FenixTabsTray(
-                context,
-                attrs,
-                itemDecoration = decoration
-            )
-        }
+        TabsTray::class.java.name -> FenixTabsTray(context, attrs)
         else -> super.onCreateView(parent, name, context, attrs)
     }
 

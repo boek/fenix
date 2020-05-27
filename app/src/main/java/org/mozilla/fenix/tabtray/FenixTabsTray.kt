@@ -8,6 +8,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import mozilla.components.concept.tabstray.Tabs
 import mozilla.components.concept.tabstray.TabsTray
 import mozilla.components.support.base.observer.Observable
 import mozilla.components.support.base.observer.ObserverRegistry
+import org.mozilla.fenix.R
 import java.lang.IllegalStateException
 
 class FenixTabsAdapter(
@@ -73,18 +75,26 @@ class FenixTabsAdapter(
     override fun onTabsChanged(position: Int, count: Int) = notifyItemRangeChanged(position, count)
 }
 
+class TabTrayDivider(context: Context) : DividerItemDecoration(context, VERTICAL) {
+    init {
+        AppCompatResources.getDrawable(context, R.drawable.tab_tray_divider)?.also {
+            setDrawable(it)
+        }
+    }
+}
+
 class FenixTabsTray(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     private val tabsAdapter: FenixTabsAdapter = FenixTabsAdapter(),
-    layout: LayoutManager = LinearLayoutManager(context),
-    itemDecoration: DividerItemDecoration? = null
+    layout: LayoutManager = LinearLayoutManager(context)
     ) : RecyclerView(context, attrs, defStyleAttr), TabsTray by tabsAdapter {
 
     init {
         layoutManager = layout
         this.adapter = tabsAdapter
-        itemDecoration?.let { addItemDecoration(it) }
+        addItemDecoration(TabTrayDivider(context))
+        TabsTouchHelper(tabsAdapter).attachToRecyclerView(this)
     }
 }

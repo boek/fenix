@@ -21,7 +21,6 @@ import mozilla.components.browser.state.selector.normalTabs
 import mozilla.components.browser.state.selector.privateTabs
 import mozilla.components.browser.state.state.BrowserState
 import mozilla.components.browser.state.state.TabSessionState
-import mozilla.components.browser.tabstray.BrowserTabsTray
 import mozilla.components.concept.tabstray.Tab
 import mozilla.components.concept.tabstray.TabsTray
 import mozilla.components.feature.tabs.tabstray.TabsFeature
@@ -97,10 +96,6 @@ class TabTrayView(
             view.context.components.useCases.tabsUseCases,
             { it.content.private == isPrivate },
             { })
-
-        (view.tabsTray as? BrowserTabsTray)?.also { tray ->
-            TabsTouchHelper(tray.tabsAdapter).attachToRecyclerView(tray)
-        }
 
         tabTrayItemMenu = TabTrayItemMenu(view.context, { view.tab_layout.selectedTabPosition == 0 }) {
             when (it) {
