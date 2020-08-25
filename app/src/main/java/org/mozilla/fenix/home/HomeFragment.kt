@@ -423,7 +423,7 @@ class HomeFragment : Fragment() {
 
         updateTabCounter(requireComponents.core.store.state)
 
-        if (args.focusOnAddressBar && requireContext().settings().useNewSearchExperience) {
+        if (args.focusOnAddressBar) {
             navigateToSearch()
         }
     }
@@ -685,16 +685,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToSearch() {
-        val directions = if (requireContext().settings().useNewSearchExperience) {
-            HomeFragmentDirections.actionGlobalSearchDialog(
-                sessionId = null
-            )
-        } else {
-            HomeFragmentDirections.actionGlobalSearch(
-                sessionId = null
-            )
-        }
-
+        val directions = HomeFragmentDirections.actionGlobalSearch(sessionId = null)
         nav(R.id.homeFragment, directions, getToolbarNavOptions(requireContext()))
     }
 

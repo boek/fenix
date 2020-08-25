@@ -80,9 +80,6 @@ class DefaultBrowserToolbarController(
     private val onCloseTab: (Session) -> Unit
 ) : BrowserToolbarController {
 
-    private val useNewSearchExperience
-        get() = activity.settings().useNewSearchExperience
-
     private val currentSession
         get() = customTabSession ?: activity.components.core.sessionManager.selectedSession
 
@@ -93,25 +90,14 @@ class DefaultBrowserToolbarController(
     internal var ioScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun handleToolbarPaste(text: String) {
-        if (useNewSearchExperience) {
-            navController.nav(
-                R.id.browserFragment, BrowserFragmentDirections.actionGlobalSearchDialog(
-                    sessionId = currentSession?.id,
-                    pastedText = text
-                ), getToolbarNavOptions(activity)
-            )
-        } else {
-            browserAnimator.captureEngineViewAndDrawStatically {
-                navController.nav(
-                    R.id.browserFragment,
-                    BrowserFragmentDirections.actionBrowserFragmentToSearchFragment(
-                        sessionId = currentSession?.id,
-                        pastedText = text
-                    ),
-                    getToolbarNavOptions(activity)
-                )
-            }
-        }
+        navController.nav(
+            R.id.browserFragment,
+            BrowserFragmentDirections.actionGlobalSearchDialog(
+                sessionId = currentSession?.id,
+                pastedText = text
+            ),
+            getToolbarNavOptions(activity)
+        )
     }
 
     override fun handleToolbarPasteAndGo(text: String) {
@@ -133,23 +119,13 @@ class DefaultBrowserToolbarController(
             Event.SearchBarTapped(Event.SearchBarTapped.Source.BROWSER)
         )
 
-        if (useNewSearchExperience) {
-            navController.nav(
-                R.id.browserFragment, BrowserFragmentDirections.actionGlobalSearchDialog(
-                    currentSession?.id
-                ), getToolbarNavOptions(activity)
-            )
-        } else {
-            browserAnimator.captureEngineViewAndDrawStatically {
-                navController.nav(
-                    R.id.browserFragment,
-                    BrowserFragmentDirections.actionBrowserFragmentToSearchFragment(
-                        currentSession?.id
-                    ),
-                    getToolbarNavOptions(activity)
-                )
-            }
-        }
+        navController.nav(
+            R.id.browserFragment,
+            BrowserFragmentDirections.actionGlobalSearchDialog(
+                currentSession?.id
+            ),
+            getToolbarNavOptions(activity)
+        )
     }
 
     override fun handleTabCounterClick() {

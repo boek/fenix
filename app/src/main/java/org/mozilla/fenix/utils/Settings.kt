@@ -97,12 +97,6 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     override val preferences: SharedPreferences =
         appContext.getSharedPreferences(FENIX_PREFERENCES, MODE_PRIVATE)
 
-    var useNewSearchExperience by featureFlagPreference(
-        appContext.getPreferenceKey(R.string.pref_key_use_new_search_experience),
-        default = false,
-        featureFlag = FeatureFlags.newSearchExperience
-    )
-
     var waitToShowPageUntilFirstPaint by featureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_wait_first_paint),
         default = false,
